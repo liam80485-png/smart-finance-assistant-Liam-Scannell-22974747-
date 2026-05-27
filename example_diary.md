@@ -1,176 +1,344 @@
-# 📓 Developer's Diary – AI Collaboration Guide
+# Developer’s Diary – AI Collaboration Guide
 
-This file shows sample entries for your **Developer's Diary**. You must document your AI collaboration throughout the project development. Each entry should have:
-- **Artifact**: a screenshot, GIF, or snippet of your AI interaction
-- **Context**: one-sentence description of your goal
-- **Reflection**: analysis of what happened, what you learned, and how you improved the solution
-
-**Key Principle**: You're directing AI like a junior developer - always review, critique, and improve their suggestions.
+This diary documents the development of a Smart Finance Assistant using AI tools. It shows how AI was used to design, build, test, and improve the system. Each entry includes the artifact, context, improvements, and reflection.
 
 ---
 
-## Foundation Skills Examples
-
-### Entry 1 – Effective AI Prompting for Business Data
-**Artifact:** Screenshot of ChatGPT conversation about analyzing spending data.
-
-**My Initial Prompt:** "Help me analyze CSV data with pandas"
-
-**My Improved Prompt:** "I'm building a Smart Finance Assistant. I have a CSV with Date, Amount, Category, Description columns. The Amount has dollar signs that need cleaning. I want to calculate total spending by category and format results for a business presentation. Please write pandas code with clear comments."
-
-**Context:** Learning to write specific, business-focused AI prompts.
-
-**Reflection:** The first prompt gave me generic pandas code. The improved prompt with business context got me professional, commented code that handled data cleaning. I learned that AI needs clear business context and output requirements to give useful results. Now I always include: data structure, business purpose, and desired output format.
+# Foundation Skills Examples
 
 ---
 
-### Entry 2 – Critiquing and Improving AI Code
-**Artifact:** Before/after screenshots of AI-generated spending analysis code.
+## Entry 1 – Designing the Finance Problem
+**Artifact:** ChatGPT brainstorming conversation
 
-**Context:** AI gave me complex code that was hard to understand for my transaction analysis.
+**Context:** Defining a clear problem for the project.
 
-**AI's First Response:**
-```python
-df.groupby('Category')['Amount'].agg({'sum','mean','count'}).round(2)
-```
+**My Prompt:**  
+"Help me brainstorm personal finance problems that can be solved using CSV transaction analysis."
 
-**My Critique:** "This code is unclear and doesn't handle dollar signs. Can you make it more readable with business-friendly variable names and add data cleaning?"
+**AI Response Summary:**  
+AI suggested budgeting, spending tracking, savings, and travel expense management.
 
-**AI's Improved Response:**
-```python
-# Clean amount data by removing dollar signs
-df['Amount_Clean'] = pd.to_numeric(df['Amount'].str.replace('$', ''), errors='coerce')
+**My Critique/Improvement:**  
+I narrowed the focus to travel finance and currency conversion.
 
-# Calculate spending metrics by category
-spending_summary = df.groupby('Category')['Amount_Clean'].agg({
-    'Total_Spent': 'sum',
-    'Average_Amount': 'mean', 
-    'Transaction_Count': 'count'
-}).round(2)
-```
+**Result:**  
+A clear project idea focused on helping travellers manage expenses in different currencies.
 
-**Reflection:** I learned that AI's first response isn't always the best. By asking for clearer variable names and business context, I got much better code. This taught me to always review AI code and ask for improvements rather than accepting the first solution.
+**Reflection:**  
+AI helped generate ideas quickly, but I needed to refine the scope to make the project focused and realistic.
 
 ---
 
-### Entry 3 – Business Context in AI Interactions
-**Artifact:** Screenshot of Gemini generating financial insights from data.
+## Entry 2 – Designing Data Inputs and Outputs
+**Artifact:** AI system design response
 
-**Context:** I wanted AI to help generate business recommendations from spending analysis.
+**Context:** Defining system inputs and outputs.
 
-**My Prompt:** "Based on this spending analysis showing Groceries: $450, Dining: $380, Coffee: $120, Transport: $95, create business insights and savings recommendations that sound professional for a personal finance app."
+**My Prompt:**  
+"For a travel finance assistant, what inputs and outputs should I include?"
 
-**AI Response:** Generated specific recommendations like "Consider meal planning to reduce dining expenses" and "Coffee purchases represent 8% of total spending - consider brewing at home."
+**AI Response Summary:**  
+Suggested transaction data, exchange rates, and financial summaries.
 
-**Reflection:** When I include business context and specify the audience (personal finance app users), AI generates much more relevant and professional output. I learned that framing requests in business terms gets business-quality responses. Now I always think about who will read the output and what decisions they need to make.
+**My Improvement:**  
+I refined outputs to match assignment requirements.
 
----
+**Result:**  
+Inputs: CSV transactions, exchange rates, user preferences  
+Outputs: spending analysis, insights, currency conversion, recommendations
 
-### Entry 4 – Data Quality and Edge Cases
-**Artifact:** Screenshot of debugging session with Claude about handling messy CSV data.
-
-**Context:** My CSV had negative amounts (refunds) and missing values that broke my calculations.
-
-**My Problem:** "My spending analysis is giving wrong totals because some amounts are negative (refunds) and some cells are empty."
-
-**AI Solution:** Helped me add data validation:
-```python
-# Handle refunds and missing data appropriately
-df_clean = df.dropna(subset=['Amount_Clean'])
-positive_spending = df_clean[df_clean['Amount_Clean'] > 0]
-refunds = df_clean[df_clean['Amount_Clean'] < 0]
-```
-
-**Reflection:** AI helped me think about real-world data issues I hadn't considered. I learned that business data is always messy and I need to ask AI specifically about edge cases like refunds, missing values, and invalid entries. This makes my finance assistant more robust for actual use.
+**Reflection:**  
+Clear inputs and outputs helped structure the entire system.
 
 ---
 
-## Advanced Integration Examples
-
-### Entry 5 – Combining Multiple AI Tools
-**Artifact:** Screenshot showing integration of hands-on-ai chat with pandas analysis.
-
-**Context:** I wanted to create a chatbot that could answer questions about spending data.
-
-**My Approach:** Used AI to help me combine CSV analysis with hands-on-ai chat functionality.
-
-**Key Learning:** AI helped me structure the integration, but I had to understand the business logic to make it useful. The chatbot needed to understand financial concepts, not just execute code.
-
-**Reflection:** Integrating multiple technologies requires understanding how each piece serves the business purpose. AI can generate technical integration code, but I need to guide it toward business value.
+# Data Processing and Analysis Development
 
 ---
 
-### Entry 6 – Professional Error Handling
-**Artifact:** Code snippet showing error handling for file uploads.
+## Entry 3 – Building the Data Cleaning Function
+**Artifact:** load_and_clean_transaction_data function
 
-**Context:** I needed my Gradio interface to handle bad CSV files gracefully.
+**Context:** Cleaning raw financial data.
 
-**AI Suggestion:** Generated try/catch blocks with business-appropriate error messages:
-```python
-try:
-    df = pd.read_csv(file.name)
-    # Analysis code...
-except FileNotFoundError:
-    return "Please upload a valid CSV file."
-except pd.errors.EmptyDataError:
-    return "The uploaded file appears to be empty. Please check your data."
-```
+**My Prompt:**  
+"Write a pandas function to clean CSV financial data with dollar signs and missing values."
 
-**Reflection:** AI helped me think about user experience, not just technical functionality. Good error messages help users understand what went wrong and how to fix it. This is crucial for business applications.
+**AI Response Summary:**  
+Basic cleaning logic for numeric conversion.
 
----
+**My Critique/Improvement:**  
+I added validation, error handling, and removal of invalid rows.
 
-## AI Collaboration Best Practices I've Learned
+**Result:**  
+A reliable data cleaning function for financial datasets.
 
-### 🎯 Effective Prompting Strategies
-1. **Always provide business context**: "I'm building a finance assistant for..."
-2. **Specify data structure**: "My CSV has columns X, Y, Z with these data types..."  
-3. **Request professional formatting**: "Format output for business presentation"
-4. **Ask for comments**: "Include clear comments explaining the business logic"
-
-### 🤔 Critique Questions I Always Ask
-- "Does this handle edge cases like negative amounts or missing data?"
-- "Are the variable names clear for a business context?"
-- "How would I explain this code to a non-technical manager?"
-- "What assumptions is this code making about my data?"
-
-### 🔄 Iterative Improvement Process
-1. **Get basic working code** from AI
-2. **Test with real data** and find issues  
-3. **Ask AI to fix specific problems** with context
-4. **Simplify complex solutions** for maintainability
-5. **Add business-appropriate formatting** and error handling
-
-### 📊 Business Value Focus
-- Always connect code back to business decisions
-- Format outputs for non-technical users
-- Include actionable insights, not just data summaries
-- Consider the end user's needs and context
+**Reflection:**  
+I learned that real-world data is messy and must always be cleaned before analysis.
 
 ---
 
-## 📝 Documentation Template for Your Entries
+## Entry 4 – Building Spending Analysis Engine
+**Artifact:** analyze_spending_patterns function
 
-Use this format for consistent diary entries:
+**Context:** Creating financial insights from transactions.
 
-```markdown
-### Entry [Number] – [Descriptive Title]
-**Artifact:** [Screenshot/code snippet/GIF of AI interaction]
+**My Prompt:**  
+"How do I calculate spending by category and generate insights?"
 
-**Context:** [One sentence: what you were trying to achieve]
+**AI Response Summary:**  
+Suggested grouping and aggregation.
 
-**My Prompt:** "[Your exact prompt to AI]"
+**My Improvement:**  
+I added:
+- percentage calculations  
+- refund handling  
+- better insight generation  
+- edge case handling  
 
-**AI Response Summary:** [Brief description of what AI provided]
+**Result:**  
+A full spending analysis system that produces meaningful insights.
 
-**My Critique/Improvement:** [How you modified or improved the AI's suggestion]
-
-**Result:** [What you ended up with and why it's better]
-
-**Reflection:** [What you learned about AI collaboration, business programming, or problem-solving]
-```
+**Reflection:**  
+I learned that analysis is not just about numbers. It is about turning data into useful information that people can understand and act on.
 
 ---
 
-✅ **Remember**: Document your AI collaboration throughout your project development. Each entry should show learning and improvement, not just successful interactions. Show how you direct AI like a junior developer to create business-appropriate solutions.
+# Recommendation and Intelligence Layer
 
+---
+
+## Entry 5 – Financial Recommendation System
+**Artifact:** generate_financial_recommendations function
+
+**Context:** Turning analysis into advice.
+
+**My Prompt:**  
+"Generate financial recommendations based on spending data."
+
+**AI Response Summary:**  
+Provided general savings suggestions.
+
+**My Critique/Improvement:**  
+I improved structure and added:
+- category-based insights  
+- percentage-based reasoning  
+- actionable advice sections  
+
+**Result:**  
+A structured financial recommendation report.
+
+**Reflection:**  
+I learned that insights are more valuable than raw analysis. Users need clear actions they can follow, not just numbers or statistics.
+
+---
+
+## Entry 6 – Simple RAG System
+**Artifact:** retrieve_documents function
+
+**Context:** Adding knowledge retrieval to the system.
+
+**My Prompt:**  
+"How can I retrieve relevant financial advice based on user questions?"
+
+**AI Response Summary:**  
+Suggested keyword matching.
+
+**My Improvement:**  
+I built a structured document system and retrieval logic.
+
+**Result:**  
+A simple retrieval system for financial knowledge.
+
+**Reflection:**  
+This introduced me to how AI systems combine data analysis with external knowledge to improve responses.
+
+---
+
+# Agent-Based System Development
+
+---
+
+## Entry 7 – Finance Agent Architecture
+**Artifact:** FinanceAgent class
+
+**Context:** Building a tool-based AI system.
+
+**My Prompt:**  
+"Create a simple AI agent that can register and use tools."
+
+**AI Response Summary:**  
+Basic tool registry design.
+
+**My Improvement:**  
+I added:
+- structured tool storage  
+- error handling  
+- reusable architecture  
+
+**Result:**  
+A working agent system that can run multiple financial tools.
+
+**Reflection:**  
+I learned how AI agents work by using tools instead of doing everything in one function. This makes systems more flexible and scalable.
+
+---
+
+## Entry 8 – Savings Calculator Tool
+**Artifact:** savings_calculator function
+
+**Context:** Adding financial planning features.
+
+**My Prompt:**  
+"Create a function that calculates how long it takes to reach a savings goal."
+
+**AI Response Summary:**  
+Provided basic calculation formula.
+
+**My Improvement:**  
+I added input validation and improved output formatting.
+
+**Result:**  
+A savings tool that estimates time to reach financial goals.
+
+**Reflection:**  
+Breaking complex financial problems into tools makes the system easier to expand and maintain.
+
+---
+
+# Chatbot and Personality Layer
+
+---
+
+## Entry 9 – Finny Chatbot Personality
+**Artifact:** system prompt
+
+**Context:** Designing an AI financial assistant personality.
+
+**My Prompt:**  
+"Create a system prompt for a financial assistant chatbot."
+
+**AI Response Summary:**  
+Basic helpful assistant prompt.
+
+**My Improvement:**  
+I refined tone, focus, and limitations.
+
+**Result:**  
+A defined chatbot personality called Finny.
+
+**Reflection:**  
+The system prompt is very important because it controls how the AI behaves and communicates with users.
+
+---
+
+## Entry 10 – Chatbot and Data Integration
+**Artifact:** ask_finny function
+
+**Context:** Connecting chatbot with financial data.
+
+**My Prompt:**  
+"How do I pass financial analysis data into a chatbot?"
+
+**AI Response Summary:**  
+Suggested combining context with user input.
+
+**My Improvement:**  
+I structured the financial data into readable context before sending it to the chatbot.
+
+**Result:**  
+A chatbot that responds using real financial data.
+
+**Reflection:**  
+Adding context makes the chatbot more intelligent and personalised.
+
+---
+
+# UI Development
+
+---
+
+## Entry 11 – Currency Converter Interface
+**Artifact:** Gradio UI
+
+**Context:** Building a user interface for currency conversion.
+
+**My Prompt:**  
+"Create a Gradio interface for a currency converter."
+
+**AI Response Summary:**  
+Basic UI with inputs and output.
+
+**My Improvement:**  
+I added validation, formatting, and error handling.
+
+**Result:**  
+A working and user-friendly web interface.
+
+**Reflection:**  
+A good interface is important because it makes complex systems easy for users to interact with.
+
+---
+
+## Entry 12 – Full System Integration
+**Artifact:** Complete project pipeline
+
+**Context:** Connecting all components into one system.
+
+**Work Completed:**
+- Data cleaning  
+- Spending analysis  
+- Recommendation engine  
+- RAG retrieval system  
+- AI agent tools  
+- Chatbot integration  
+- Gradio interface  
+
+**Reflection:**  
+The main challenge was making all parts work together. AI helped build individual components, but I had to ensure they were connected properly and produced consistent results.
+
+---
+
+# AI Collaboration Best Practices
+
+---
+
+## Prompting Improvements
+- Always include business context
+- Clearly define inputs and outputs
+- Specify desired format and audience
+- Ask for explanations, not just code
+
+---
+
+## Evaluation Questions
+- Does this work with real messy data?
+- Can a non-technical user understand it?
+- Does it provide useful actions or just information?
+- Can it scale to larger datasets?
+
+---
+
+## Development Process
+1. Generate initial AI solution  
+2. Test with real data  
+3. Identify problems  
+4. Refine prompts  
+5. Improve structure and usability  
+
+---
+
+# Key Learning
+
+Throughout this project, I learned that building systems with AI is not just about asking for code. It is about learning how to guide AI properly so it produces useful and reliable results.
+
+At the start, I thought AI could directly build complete solutions. However, I realised that the quality of output depends heavily on how I communicate the problem. When I gave vague prompts, the results were basic and not very useful. When I added context, structure, and clear requirements, the AI produced much better and more professional solutions.
+
+I also learned that development is an iterative process. I rarely got the final solution on the first attempt. Instead, I had to test the code, find problems, and then improve my prompts or adjust the logic. This cycle of generating, testing, and refining was important for building a working system.
+
+Another key learning was understanding real-world data issues. Financial data is not clean or perfect. It can include missing values, incorrect formats, refunds, and unexpected inputs. I had to design my system to handle these cases, which made it more realistic and reliable.
+
+I also learned how different parts of an AI system work together. My project included data processing, analysis, recommendations, retrieval systems, AI agents, and a chatbot. Each part had a different role, but they all needed to work together to create a complete system. This helped me understand how real AI applications are built in layers.
+
+Finally, I learned that AI is a tool that supports development, not a replacement for thinking. It can generate ideas, code, and suggestions, but I still need to evaluate, improve, and connect everything logically. The most important skill is not just using AI, but knowing how to guide it effectively to solve real problems.
